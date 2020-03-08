@@ -20,11 +20,7 @@
 #ifndef __HWC_SESSION_H__
 #define __HWC_SESSION_H__
 
-#ifdef DISPLAY_CONFIG_1_9
-#include <vendor/display/config/1.9/IDisplayConfig.h>
-#elif DISPLAY_CONFIG_1_8
-#include <vendor/display/config/1.8/IDisplayConfig.h>
-#elif DISPLAY_CONFIG_1_7
+#ifdef DISPLAY_CONFIG_1_7
 #include <vendor/display/config/1.7/IDisplayConfig.h>
 #elif DISPLAY_CONFIG_1_1
 #include <vendor/display/config/1.1/IDisplayConfig.h>
@@ -47,11 +43,7 @@
 
 namespace sdm {
 
-#ifdef DISPLAY_CONFIG_1_9
-using vendor::display::config::V1_9::IDisplayConfig;
-#elif DISPLAY_CONFIG_1_8
-using vendor::display::config::V1_8::IDisplayConfig;
-#elif DISPLAY_CONFIG_1_7
+#ifdef DISPLAY_CONFIG_1_7
 using vendor::display::config::V1_7::IDisplayConfig;
 #elif DISPLAY_CONFIG_1_1
 using vendor::display::config::V1_1::IDisplayConfig;
@@ -261,15 +253,6 @@ class HWCSession : hwc2_device_t, HWCUEventListener, IDisplayConfig, public qCli
   Return<void> getDebugProperty(const hidl_string &prop_name,
                                 getDebugProperty_cb _hidl_cb) override;
 #endif
-#ifdef DISPLAY_CONFIG_1_8
-  Return<void> getActiveBuiltinDisplayAttributes(getDisplayAttributes_cb _hidl_cb) override;
-#endif
-
-#ifdef DISPLAY_CONFIG_1_9
-  Return<int32_t> setPanelLuminanceAttributes(uint32_t disp_id, float min_lum,
-                                              float max_lum) override;
-  Return<bool> isBuiltInDisplay(uint32_t disp_id) override;
-#endif
 
   // QClient methods
   virtual android::status_t notifyCallback(uint32_t command, const android::Parcel *input_parcel,
@@ -317,6 +300,7 @@ class HWCSession : hwc2_device_t, HWCUEventListener, IDisplayConfig, public qCli
   bool is_composer_up_ = false;
   bool null_display_active_ = false;
   Locker callbacks_lock_;
+  bool callback_reg_ = false;
 };
 
 }  // namespace sdm
