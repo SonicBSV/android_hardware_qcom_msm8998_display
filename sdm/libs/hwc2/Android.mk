@@ -16,6 +16,11 @@ LOCAL_CFLAGS                  := -Wno-missing-field-initializers -Wno-unused-par
                                  -std=c++11 -fcolor-diagnostics\
                                  -DLOG_TAG=\"SDM\" $(common_flags) \
                                  -I $(display_top)/sdm/libs/hwc
+
+ifeq ($(TARGET_KERNEL_VERSION), 4.14)
+LOCAL_CFLAGS += -DTARGET_KERNEL_4_14
+endif
+
 ifeq ($(TARGET_EXCLUDES_DISPLAY_PP), true)
 LOCAL_CFLAGS += -DEXCLUDE_DISPLAY_PP
 endif
@@ -42,6 +47,19 @@ LOCAL_SHARED_LIBRARIES        += vendor.display.config@1.7 \
                                  vendor.display.config@1.6 vendor.display.config@1.5 \
                                  vendor.display.config@1.4 vendor.display.config@1.3 \
                                  vendor.display.config@1.2 vendor.display.config@1.1
+endif
+ifeq ($(display_config_version), DISPLAY_CONFIG_1_8)
+LOCAL_SHARED_LIBRARIES        += vendor.display.config@1.1 vendor.display.config@1.2 \
+                                 vendor.display.config@1.3 vendor.display.config@1.4 \
+                                 vendor.display.config@1.5 vendor.display.config@1.6 \
+                                 vendor.display.config@1.7 vendor.display.config@1.8
+endif
+ifeq ($(display_config_version), DISPLAY_CONFIG_1_9)
+LOCAL_SHARED_LIBRARIES        += vendor.display.config@1.1 vendor.display.config@1.2 \
+                                 vendor.display.config@1.3 vendor.display.config@1.4 \
+                                 vendor.display.config@1.5 vendor.display.config@1.6 \
+                                 vendor.display.config@1.7 vendor.display.config@1.8 \
+                                 vendor.display.config@1.9
 endif
 
 LOCAL_SRC_FILES               := hwc_session.cpp \

@@ -309,16 +309,15 @@ int32_t HWCSession::MinHdcpEncryptionLevelChanged(int disp_id, uint32_t min_enc_
     DLOGE("Invalid display = %d", disp_id);
     return -EINVAL;
   }
-
+  if (hdmi_is_primary_) {
+    disp_id = HWC_DISPLAY_PRIMARY;
+  }
   SEQUENCE_WAIT_SCOPE_LOCK(locker_[disp_id]);
-  if (disp_id != HWC_DISPLAY_EXTERNAL) {
+  if (!hdmi_is_primary_ && disp_id != HWC_DISPLAY_EXTERNAL) {
     DLOGE("Not supported for display");
   } else if (!hwc_display_[disp_id] && !hdmi_is_primary_) {
     DLOGW("Display is not connected");
   } else {
-    if (hdmi_is_primary_) {
-      disp_id = HWC_DISPLAY_PRIMARY;
-    }
     return hwc_display_[disp_id]->OnMinHdcpEncryptionLevelChange(min_enc_level);
   }
 
@@ -610,5 +609,32 @@ Return<void> HWCSession::getDebugProperty(const hidl_string &prop_name,
   return Void();
 }
 #endif
+
+
+#ifdef DISPLAY_CONFIG_1_8
+Return<void> HWCSession::getActiveBuiltinDisplayAttributes(
+                                          getDisplayAttributes_cb _hidl_cb) {
+  DLOGE("Not supported at present");
+  return Void();
+}
+#endif  // DISPLAY_CONFIG_1_8
+
+#ifdef DISPLAY_CONFIG_1_9
+Return<int32_t> HWCSession::setPanelLuminanceAttributes(uint32_t disp_id, float pan_min_lum,
+                                                        float pan_max_lum) {
+  DLOGE("Not supported at present");
+  return -1;
+}
+
+Return<bool> HWCSession::isBuiltInDisplay(uint32_t disp_id) {
+  if ((HWC_DISPLAY_PRIMARY == disp_id) || (HWC_DISPLAY_BUILTIN_2 == disp_id) ||
+      (HWC_DISPLAY_BUILTIN_3 == disp_id) || (HWC_DISPLAY_BUILTIN_4 == disp_id)) {
+    return true;
+  }
+  else {
+   return false;
+  }
+}
+#endif  // DISPLAY_CONFIG_1_9
 
 }  // namespace sdm
